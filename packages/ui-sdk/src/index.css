@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Scan SDK component class strings from source (workspace) and dist (published package). */
+@source "./components/**/*.{tsx,mjs,js}";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

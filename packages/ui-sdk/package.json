@@ -1,5 +1,5 @@
 {
-  "name": "ui-sdk",
+  "name": "@workspace/ui-sdk",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -26,25 +26,32 @@
   },
   "typesVersions": {
     "*": {
-      "components/ui/*": ["dist/components/ui/*.d.ts"],
-      "hooks/*": ["dist/hooks/*.d.ts"],
-      "lib/*": ["dist/lib/*.d.ts"]
+      "components/ui/*": [
+        "dist/components/ui/*.d.ts"
+      ],
+      "hooks/*": [
+        "dist/hooks/*.d.ts"
+      ],
+      "lib/*": [
+        "dist/lib/*.d.ts"
+      ]
     }
   },
-  "files": ["dist"],
-  "sideEffects": ["**/*.css"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsup && cp src/index.css dist/styles.css",
-    "build:watch": "tsup --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint .",
-    "check-types": "tsc --noEmit",
-    "preview": "vite preview"
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
-    "@tailwindcss/vite": "^4.1.17",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -70,7 +77,6 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

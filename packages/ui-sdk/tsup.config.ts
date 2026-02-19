@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup"
+import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: [
@@ -8,16 +8,18 @@ export default defineConfig({
     "src/lib/**/*.ts",
   ],
   format: ["esm"],
+  name: "@workspace/ui-sdk",
   dts: true,
   bundle: false,
   splitting: false,
   sourcemap: true,
   clean: true,
+  onSuccess: "cp src/index.css dist/styles.css",
   target: "es2022",
   outDir: "dist",
   outExtension({ format }) {
     return {
       js: format === "esm" ? ".mjs" : ".js",
-    }
+    };
   },
-})
+});
