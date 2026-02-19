@@ -3,10 +3,42 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./components/ui/*": {
+      "types": "./dist/components/ui/*.d.ts",
+      "import": "./dist/components/ui/*.mjs"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.mjs"
+    },
+    "./lib/*": {
+      "types": "./dist/lib/*.d.ts",
+      "import": "./dist/lib/*.mjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "typesVersions": {
+    "*": {
+      "components/ui/*": ["dist/components/ui/*.d.ts"],
+      "hooks/*": ["dist/hooks/*.d.ts"],
+      "lib/*": ["dist/lib/*.d.ts"]
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": ["**/*.css"],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsup && cp src/index.css dist/styles.css",
+    "build:watch": "tsup --watch",
     "lint": "eslint .",
+    "check-types": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
