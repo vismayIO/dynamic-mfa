@@ -116,16 +116,17 @@ async function initializeRemoteContainer(
     return;
   }
 
-  const initPromise = container
-    .init(__webpack_share_scopes__.default)
+  const normalizedInitPromise = Promise.resolve(
+    container.init(__webpack_share_scopes__.default),
+  )
     .catch((error) => {
       if (!isAlreadyInitializedError(error)) {
         throw error;
       }
     });
 
-  remoteContainerInitCache.set(cacheKey, initPromise);
-  await initPromise;
+  remoteContainerInitCache.set(cacheKey, normalizedInitPromise);
+  await normalizedInitPromise;
 }
 
 export async function loadFederatedComponent(

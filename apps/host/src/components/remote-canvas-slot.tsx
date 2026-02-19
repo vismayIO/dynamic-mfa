@@ -36,9 +36,17 @@ export function RemoteCanvasSlot({
           setRemoteComponent(() => component);
         }
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         if (!disposed) {
-          setLoadError(`Unable to load ${registryItem.displayName}.`);
+          const message = error instanceof Error ? error.message : "Unknown loader error";
+          console.error("[remote-loader]", {
+            registryId: registryItem.id,
+            remoteEntryUrl: registryItem.remoteEntryUrl,
+            remoteScope: registryItem.remoteScope,
+            exposedModule: registryItem.exposedModule,
+            error,
+          });
+          setLoadError(`Unable to load ${registryItem.displayName}: ${message}`);
         }
       });
 
