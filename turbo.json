@@ -7,6 +7,12 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "host#build": {
+      "dependsOn": ["@workspace/ui-sdk#build"]
+    },
+    "remote-widget#build": {
+      "dependsOn": ["@workspace/ui-sdk#build"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
