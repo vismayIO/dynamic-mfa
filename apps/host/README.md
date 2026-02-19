@@ -1,22 +1,32 @@
-# React + TypeScript + Webpack Module Federation
+# Host App (Low-Code Composer)
 
-This host app runs on Webpack 5 and is configured with Module Federation.
+Host is a Webpack 5 app that dynamically loads remote components via Module Federation.
 
 ## Scripts
 
-- `bun run dev`: Starts the host on `http://localhost:3000`
-- `bun run build`: Type-checks and creates a production bundle
+- `bun run dev`: starts host at `http://localhost:3000`
+- `bun run build`: type-checks and produces `dist/`
 
-## Remote Configuration
+## Build-Time Environment
 
-By default, the host expects a remote container at:
+Copy from `.env.example` and set values in your build environment:
 
-`http://localhost:3001/remoteEntry.js`
+- `REMOTE_WIDGET_ENTRY_URL`
+  Example CDN-friendly path:
+  `/remotes/remote-widget/remoteEntry.js`
+  Or absolute URL:
+  `https://cdn.example.com/remotes/remote-widget/remoteEntry.js`
+- `REMOTE_WIDGET_SCOPE`
+  Must match remote federation `name` (default `remoteWidget`)
 
-Override it with:
+Webpack injects these at build time and the component registry uses them.
 
-```bash
-REMOTE_APP_URL=http://localhost:3001/remoteEntry.js bun run dev
-```
+## Deployment Output
 
-The app lazy-loads `remoteApp/MfaRegister` and shows a local fallback if the remote is unavailable.
+Deploy everything under `apps/host/dist/` to S3 behind CloudFront.
+
+Required host artifacts:
+
+- `index.html`
+- `main.js`
+- chunk files like `*.js` and `*.js.LICENSE.txt`

@@ -1,1 +1,177 @@
 @import "@workspace/ui-sdk/styles.css";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f4f5f7;
+  color: #101828;
+  font-family: "Inter", sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.composer-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+.composer-sidebar {
+  border-right: 1px solid #d0d5dd;
+  background: #ffffff;
+  padding: 20px;
+}
+
+.composer-sidebar h1 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.composer-sidebar p {
+  margin: 0 0 16px;
+  color: #475467;
+  font-size: 0.9rem;
+}
+
+.composer-sidebar-list {
+  display: grid;
+  gap: 10px;
+}
+
+.composer-sidebar-item {
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 12px;
+  text-align: left;
+  cursor: grab;
+  display: grid;
+  gap: 4px;
+}
+
+.composer-sidebar-item:active {
+  cursor: grabbing;
+}
+
+.composer-sidebar-item-title {
+  font-weight: 600;
+}
+
+.composer-sidebar-item-meta {
+  color: #667085;
+  font-size: 0.8rem;
+}
+
+.composer-main {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  grid-template-rows: auto 1fr auto;
+}
+
+.composer-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.composer-main-header h2,
+.composer-main-header p {
+  margin: 0;
+}
+
+.composer-canvas {
+  border: 2px dashed #d0d5dd;
+  border-radius: 14px;
+  padding: 16px;
+  background: #ffffff;
+  min-height: 420px;
+}
+
+.composer-canvas--over {
+  border-color: #1570ef;
+  background: #eff8ff;
+}
+
+.composer-empty-state {
+  margin: 0;
+  color: #667085;
+}
+
+.composer-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 60px;
+  gap: 12px;
+}
+
+.composer-slot {
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.composer-slot-toolbar {
+  border-bottom: 1px solid #eaecf0;
+  background: #f9fafb;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.composer-slot-remove {
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.composer-slot-content {
+  padding: 10px;
+  overflow: auto;
+}
+
+.composer-state-preview {
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.composer-state-preview h3 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.composer-state-preview pre {
+  margin: 0;
+  overflow: auto;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+  .composer-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .composer-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #d0d5dd;
+  }
+}

@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "webpack serve --config webpack.config.cjs --mode development",
     "build": "tsc -b && webpack --config webpack.config.cjs --mode production",
+    "check-types": "tsc -b",
     "lint": "eslint .",
     "preview": "webpack serve --config webpack.config.cjs --mode production"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@workspace/ui-sdk": "workspace:*",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@workspace/ui-sdk": "workspace:*"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",

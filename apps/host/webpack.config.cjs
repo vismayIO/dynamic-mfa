@@ -1,9 +1,14 @@
-const { container } = require('webpack')
+const webpack = require('webpack')
+const { container } = webpack
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const ModuleFederationPlugin = container.ModuleFederationPlugin
 const deps = require('./package.json').dependencies
-const remoteAppUrl = process.env.REMOTE_APP_URL || 'http://localhost:3001/remoteEntry.js'
+const buildEnv = {
+  REMOTE_WIDGET_ENTRY_URL:
+    process.env.REMOTE_WIDGET_ENTRY_URL || '/remotes/remote-widget/remoteEntry.js',
+  REMOTE_WIDGET_SCOPE: process.env.REMOTE_WIDGET_SCOPE || 'remoteWidget',
+}
 
 module.exports = {
   entry: './src/index.ts',
@@ -55,9 +60,6 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'host',
-      remotes: {
-        remoteApp: `remoteApp@${remoteAppUrl}`,
-      },
       shared: {
         react: {
           singleton: true,
@@ -67,7 +69,15 @@ module.exports = {
           singleton: true,
           requiredVersion: deps['react-dom'],
         },
+        '@workspace/ui-sdk': {
+          singleton: true,
+          requiredVersion: deps['@workspace/ui-sdk'],
+        },
       },
+    }),
+    new webpack.DefinePlugin({
+      __REMOTE_WIDGET_ENTRY_URL__: JSON.stringify(buildEnv.REMOTE_WIDGET_ENTRY_URL),
+      __REMOTE_WIDGET_SCOPE__: JSON.stringify(buildEnv.REMOTE_WIDGET_SCOPE),
     }),
     new HtmlWebpackPlugin({
       template: './index.html',

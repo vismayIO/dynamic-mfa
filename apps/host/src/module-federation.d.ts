@@ -1,6 +1,4 @@
-declare module 'remoteApp/MfaRegister' {
-  import type { ComponentType } from 'react'
-
-  const RemoteMfaRegister: ComponentType
-  export default RemoteMfaRegister
-}
+declare const __webpack_init_sharing__: (scope: string) => Promise<void>;
+declare const __webpack_share_scopes__: {
+  default: unknown;
+};
