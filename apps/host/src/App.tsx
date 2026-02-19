@@ -11,9 +11,10 @@ import { loadCanvasState, saveCanvasState } from "./composer/layout-storage";
 import type { HostRemoteEvent } from "./composer/remote-events";
 import { RemoteCanvasSlot } from "./components/remote-canvas-slot";
 import {
-  componentRegistry,
+  staticComponentRegistry,
   type RemoteComponentRegistryItem,
 } from "./registry/component-registry";
+import { fetchComponentRegistry } from "./registry/registry-client";
 
 const COMPOSER_CANVAS_DROPZONE_ID = "composer-canvas";
 const MIN_CANVAS_SPAN = 2;
@@ -260,13 +261,17 @@ function App() {
     loadCanvasState(initialCanvasState),
   );
   const [remoteEvents, setRemoteEvents] = useState<HostRemoteEvent[]>([]);
+  const [registryModules, setRegistryModules] =
+    useState<RemoteComponentRegistryItem[]>(staticComponentRegistry);
+  const [registryLoading, setRegistryLoading] = useState<boolean>(true);
+  const [registryError, setRegistryError] = useState<string | null>(null);
 
   const registryById = useMemo(
     () =>
       new Map<string, RemoteComponentRegistryItem>(
-        componentRegistry.map((item) => [item.id, item]),
+        registryModules.map((item) => [item.id, item]),
       ),
-    [],
+    [registryModules],
   );
   const hostTheme = useMemo<RemoteComponentTheme>(
     () => ({
@@ -340,6 +345,41 @@ function App() {
     saveCanvasState(canvasState);
   }, [canvasState]);
 
+  useEffect(() => {
+    let disposed = false;
+    const controller = new AbortController();
+
+    fetchComponentRegistry(controller.signal)
+      .then((registryItems) => {
+        if (disposed) {
+          return;
+        }
+
+        setRegistryModules(registryItems);
+        setRegistryError(null);
+      })
+      .catch((error: unknown) => {
+        if (disposed) {
+          return;
+        }
+
+        const message =
+          error instanceof Error ? error.message : "Failed to fetch dynamic module registry.";
+        setRegistryModules(staticComponentRegistry);
+        setRegistryError(message);
+      })
+      .finally(() => {
+        if (!disposed) {
+          setRegistryLoading(false);
+        }
+      });
+
+    return () => {
+      disposed = true;
+      controller.abort();
+    };
+  }, []);
+
   const handleRemoteEvent = useCallback((event: HostRemoteEvent) => {
     setRemoteEvents((currentEvents) => [event, ...currentEvents].slice(0, 20));
     console.log(
@@ -353,9 +393,13 @@ function App() {
       <main className="composer-shell">
         <aside className="composer-sidebar">
           <h1>Component Registry</h1>
-          <p>Drag components into the canvas to compose UI.</p>
+          <p>
+            Drag components into the canvas to compose UI.
+            {registryLoading ? " Loading modules..." : ` Loaded ${registryModules.length} modules.`}
+          </p>
+          {registryError ? <p className="read-the-docs">Registry fallback: {registryError}</p> : null}
           <div className="composer-sidebar-list">
-            {componentRegistry.map((item) => (
+            {registryModules.map((item) => (
               <SidebarComponentCard key={item.id} item={item} />
             ))}
           </div>

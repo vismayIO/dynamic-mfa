@@ -8,6 +8,8 @@ const buildEnv = {
   REMOTE_WIDGET_ENTRY_URL:
     process.env.REMOTE_WIDGET_ENTRY_URL || '/remotes/remote-widget/remoteEntry.js',
   REMOTE_WIDGET_SCOPE: process.env.REMOTE_WIDGET_SCOPE || 'remoteWidget',
+  MODULE_REGISTRY_API_URL: process.env.MODULE_REGISTRY_API_URL || '',
+  MODULE_REGISTRY_API_KEY: process.env.MODULE_REGISTRY_API_KEY || '',
 }
 
 module.exports = {
@@ -78,6 +80,8 @@ module.exports = {
     new webpack.DefinePlugin({
       __REMOTE_WIDGET_ENTRY_URL__: JSON.stringify(buildEnv.REMOTE_WIDGET_ENTRY_URL),
       __REMOTE_WIDGET_SCOPE__: JSON.stringify(buildEnv.REMOTE_WIDGET_SCOPE),
+      __MODULE_REGISTRY_API_URL__: JSON.stringify(buildEnv.MODULE_REGISTRY_API_URL),
+      __MODULE_REGISTRY_API_KEY__: JSON.stringify(buildEnv.MODULE_REGISTRY_API_KEY),
     }),
     new HtmlWebpackPlugin({
       template: './index.html',
