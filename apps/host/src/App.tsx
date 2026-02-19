@@ -10,10 +10,7 @@ import type { CanvasState } from "./composer/canvas-state";
 import { loadCanvasState, saveCanvasState } from "./composer/layout-storage";
 import type { HostRemoteEvent } from "./composer/remote-events";
 import { RemoteCanvasSlot } from "./components/remote-canvas-slot";
-import {
-  staticComponentRegistry,
-  type RemoteComponentRegistryItem,
-} from "./registry/component-registry";
+import { type RemoteComponentRegistryItem } from "./registry/component-registry";
 import { fetchComponentRegistry } from "./registry/registry-client";
 
 const COMPOSER_CANVAS_DROPZONE_ID = "composer-canvas";
@@ -261,8 +258,7 @@ function App() {
     loadCanvasState(initialCanvasState),
   );
   const [remoteEvents, setRemoteEvents] = useState<HostRemoteEvent[]>([]);
-  const [registryModules, setRegistryModules] =
-    useState<RemoteComponentRegistryItem[]>(staticComponentRegistry);
+  const [registryModules, setRegistryModules] = useState<RemoteComponentRegistryItem[]>([]);
   const [registryLoading, setRegistryLoading] = useState<boolean>(true);
   const [registryError, setRegistryError] = useState<string | null>(null);
 
@@ -364,8 +360,8 @@ function App() {
         }
 
         const message =
-          error instanceof Error ? error.message : "Failed to fetch dynamic module registry.";
-        setRegistryModules(staticComponentRegistry);
+          error instanceof Error ? error.message : "Failed to fetch module registry.";
+        setRegistryModules([]);
         setRegistryError(message);
       })
       .finally(() => {
@@ -395,9 +391,16 @@ function App() {
           <h1>Component Registry</h1>
           <p>
             Drag components into the canvas to compose UI.
-            {registryLoading ? " Loading modules..." : ` Loaded ${registryModules.length} modules.`}
+            {registryLoading
+              ? " Fetching modules from backend..."
+              : ` Loaded ${registryModules.length} modules from backend.`}
           </p>
-          {registryError ? <p className="read-the-docs">Registry fallback: {registryError}</p> : null}
+          {registryError ? <p className="read-the-docs">Registry error: {registryError}</p> : null}
+          {!registryLoading && registryModules.length === 0 ? (
+            <p className="read-the-docs">
+              No modules available. Register modules in Fastify/DynamoDB first.
+            </p>
+          ) : null}
           <div className="composer-sidebar-list">
             {registryModules.map((item) => (
               <SidebarComponentCard key={item.id} item={item} />

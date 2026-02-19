@@ -12,31 +12,6 @@ export interface RemoteComponentRegistryItem {
   defaultLayoutSize: DefaultLayoutSize;
 }
 
-const defaultRemoteWidgetEntryUrl =
-  typeof __REMOTE_WIDGET_ENTRY_URL__ === "string" &&
-  __REMOTE_WIDGET_ENTRY_URL__.trim().length > 0
-    ? __REMOTE_WIDGET_ENTRY_URL__
-    : "/remotes/remote-widget/remoteEntry.js";
-
-const defaultRemoteWidgetScope =
-  typeof __REMOTE_WIDGET_SCOPE__ === "string" && __REMOTE_WIDGET_SCOPE__.trim().length > 0
-    ? __REMOTE_WIDGET_SCOPE__
-    : "remoteWidget";
-
-export const staticComponentRegistry: RemoteComponentRegistryItem[] = [
-  {
-    id: "mfa-register-widget",
-    displayName: "MFA Register Widget",
-    remoteEntryUrl: defaultRemoteWidgetEntryUrl,
-    remoteScope: defaultRemoteWidgetScope,
-    exposedModule: "./Widget",
-    defaultLayoutSize: {
-      width: 6,
-      height: 4,
-    },
-  },
-];
-
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }

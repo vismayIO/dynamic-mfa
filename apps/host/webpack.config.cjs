@@ -1,13 +1,15 @@
 const webpack = require('webpack')
 const { container } = webpack
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const dotenv = require('dotenv')
+
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true, quiet: true })
+dotenv.config({ path: path.resolve(__dirname, '.env.local'), override: true, quiet: true })
 
 const ModuleFederationPlugin = container.ModuleFederationPlugin
 const deps = require('./package.json').dependencies
 const buildEnv = {
-  REMOTE_WIDGET_ENTRY_URL:
-    process.env.REMOTE_WIDGET_ENTRY_URL || '/remotes/remote-widget/remoteEntry.js',
-  REMOTE_WIDGET_SCOPE: process.env.REMOTE_WIDGET_SCOPE || 'remoteWidget',
   MODULE_REGISTRY_API_URL: process.env.MODULE_REGISTRY_API_URL || '',
   MODULE_REGISTRY_API_KEY: process.env.MODULE_REGISTRY_API_KEY || '',
 }
@@ -78,8 +80,6 @@ module.exports = {
       },
     }),
     new webpack.DefinePlugin({
-      __REMOTE_WIDGET_ENTRY_URL__: JSON.stringify(buildEnv.REMOTE_WIDGET_ENTRY_URL),
-      __REMOTE_WIDGET_SCOPE__: JSON.stringify(buildEnv.REMOTE_WIDGET_SCOPE),
       __MODULE_REGISTRY_API_URL__: JSON.stringify(buildEnv.MODULE_REGISTRY_API_URL),
       __MODULE_REGISTRY_API_KEY__: JSON.stringify(buildEnv.MODULE_REGISTRY_API_KEY),
     }),
