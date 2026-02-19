@@ -1,0 +1,40 @@
+{
+  "name": "remote-widget",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "webpack serve --config webpack.config.cjs --mode development",
+    "build": "tsc -b && webpack --config webpack.config.cjs --mode production",
+    "lint": "eslint .",
+    "preview": "webpack serve --config webpack.config.cjs --mode production",
+    "check-types": "tsc -b"
+  },
+  "dependencies": {
+    "@workspace/ui-sdk": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "html-webpack-plugin": "^5.6.3",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.1.1",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^4.2.0",
+    "ts-loader": "^9.5.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.48.0",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
+  }
+}

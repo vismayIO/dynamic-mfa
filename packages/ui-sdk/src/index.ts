@@ -1,4 +1,5 @@
 export * from "./lib/utils"
+export * from "./lib/remote-component"
 export * from "./hooks/use-mobile"
 export * from "./components/ui/accordion"
 export * from "./components/ui/alert"
