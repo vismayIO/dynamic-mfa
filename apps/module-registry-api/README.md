@@ -32,6 +32,20 @@ If `tsx watch` fails on your machine, run:
 bun run dev:nowatch
 ```
 
+## Serverless (AWS Lambda)
+
+This app now includes a Lambda entrypoint built with `@fastify/aws-lambda`.
+
+1. Build the app:
+
+```bash
+bun run build
+```
+
+2. Use `dist/lambda.handler` as your Lambda handler.
+
+3. Use Node.js 20+ runtime and pass env vars the same way as local run (`.env` keys become Lambda environment variables).
+
 ## Endpoints
 
 - `GET /health`
