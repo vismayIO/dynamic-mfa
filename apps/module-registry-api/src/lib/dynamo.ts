@@ -97,7 +97,9 @@ async function waitForTableActive(
     });
   }
 
-  throw new Error(`Timed out waiting for DynamoDB table "${tableName}" to become ACTIVE.`);
+  throw new Error(
+    `Timed out waiting for DynamoDB table "${tableName}" to become ACTIVE.`,
+  );
 }
 
 function isTableNotFoundError(error: unknown): boolean {
@@ -115,10 +117,6 @@ export function createModuleRepository(config: AppConfig): ModuleRepository {
   const dynamoClient = new DynamoDBClient({
     region: config.awsRegion,
     endpoint: config.dynamoEndpoint,
-    credentials: {
-      accessKeyId: config.dynamoAccessKeyId,
-      secretAccessKey: config.dynamoSecretAccessKey,
-    },
   });
   const documentClient = DynamoDBDocumentClient.from(dynamoClient, {
     marshallOptions: {
@@ -225,7 +223,9 @@ export function createModuleRepository(config: AppConfig): ModuleRepository {
     );
 
     const records = (response.Items ?? []) as ModuleRecord[];
-    const filtered = status ? records.filter((record) => record.status === status) : records;
+    const filtered = status
+      ? records.filter((record) => record.status === status)
+      : records;
 
     return filtered.map(mapRecordToItem);
   };

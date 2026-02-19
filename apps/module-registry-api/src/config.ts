@@ -4,14 +4,10 @@ export interface AppConfig {
   awsRegion: string;
   dynamoTableName: string;
   dynamoEndpoint?: string;
-  dynamoAccessKeyId: string;
-  dynamoSecretAccessKey: string;
   s3Region: string;
   s3BucketName: string;
   s3Endpoint?: string;
   s3ForcePathStyle: boolean;
-  s3AccessKeyId: string;
-  s3SecretAccessKey: string;
   s3PublicBaseUrl: string;
   s3UploadPrefix: string;
   autoCreateS3Bucket: boolean;
@@ -95,13 +91,16 @@ function buildDefaultS3PublicBaseUrl(params: {
 }
 
 export function loadConfig(): AppConfig {
-  const awsRegion = readString("AWS_REGION", "us-east-1");
+  const awsRegion = readString("AWS_REGION", "ap-south-1");
   const dynamoEndpoint = readString("DYNAMODB_ENDPOINT", "");
 
   const s3Endpoint = readString("S3_ENDPOINT", "");
   const s3BucketName = readString("S3_BUCKET_NAME", "module-artifacts");
   const s3Region = readString("S3_REGION", awsRegion);
-  const s3ForcePathStyle = readBoolean("S3_FORCE_PATH_STYLE", Boolean(s3Endpoint));
+  const s3ForcePathStyle = readBoolean(
+    "S3_FORCE_PATH_STYLE",
+    Boolean(s3Endpoint),
+  );
   const s3PublicBaseUrl = trimTrailingSlash(
     readString(
       "S3_PUBLIC_BASE_URL",
@@ -115,7 +114,8 @@ export function loadConfig(): AppConfig {
   );
 
   const maxArchiveSizeMb = readNumber("MAX_ARCHIVE_UPLOAD_SIZE_MB", 20);
-  const maxArchiveUploadSizeBytes = Math.max(1, Math.floor(maxArchiveSizeMb)) * 1024 * 1024;
+  const maxArchiveUploadSizeBytes =
+    Math.max(1, Math.floor(maxArchiveSizeMb)) * 1024 * 1024;
 
   return {
     host: readString("HOST", "0.0.0.0"),
@@ -123,17 +123,10 @@ export function loadConfig(): AppConfig {
     awsRegion,
     dynamoTableName: readString("DYNAMODB_TABLE_NAME", "module_registry"),
     dynamoEndpoint: dynamoEndpoint.length > 0 ? dynamoEndpoint : undefined,
-    dynamoAccessKeyId: readString("AWS_ACCESS_KEY_ID", "local"),
-    dynamoSecretAccessKey: readString("AWS_SECRET_ACCESS_KEY", "local"),
     s3Region,
     s3BucketName,
     s3Endpoint: s3Endpoint.length > 0 ? s3Endpoint : undefined,
     s3ForcePathStyle,
-    s3AccessKeyId: readString("S3_ACCESS_KEY_ID", readString("AWS_ACCESS_KEY_ID", "local")),
-    s3SecretAccessKey: readString(
-      "S3_SECRET_ACCESS_KEY",
-      readString("AWS_SECRET_ACCESS_KEY", "local"),
-    ),
     s3PublicBaseUrl,
     s3UploadPrefix: readString("S3_UPLOAD_PREFIX", "modules"),
     autoCreateS3Bucket: readBoolean("AUTO_CREATE_S3_BUCKET", true),

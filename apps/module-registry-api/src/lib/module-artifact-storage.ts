@@ -46,7 +46,10 @@ function sanitizeKeySegment(value: string): string {
   return sanitized.length > 0 ? sanitized : "unknown";
 }
 
-function createObjectPrefix(config: AppConfig, input: UploadModuleArtifactsInput): string {
+function createObjectPrefix(
+  config: AppConfig,
+  input: UploadModuleArtifactsInput,
+): string {
   const segments = [
     sanitizeKeySegment(config.s3UploadPrefix),
     sanitizeKeySegment(input.tenantId),
@@ -92,15 +95,13 @@ function createPublicReadPolicy(bucketName: string): string {
   });
 }
 
-export function createModuleArtifactStorage(config: AppConfig): ModuleArtifactStorage {
+export function createModuleArtifactStorage(
+  config: AppConfig,
+): ModuleArtifactStorage {
   const s3Client = new S3Client({
     region: config.s3Region,
     endpoint: config.s3Endpoint,
     forcePathStyle: config.s3ForcePathStyle,
-    credentials: {
-      accessKeyId: config.s3AccessKeyId,
-      secretAccessKey: config.s3SecretAccessKey,
-    },
   });
 
   const ensureBucketExists = async () => {
