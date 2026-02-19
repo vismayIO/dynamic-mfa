@@ -6,6 +6,17 @@ export interface AppConfig {
   dynamoEndpoint?: string;
   dynamoAccessKeyId: string;
   dynamoSecretAccessKey: string;
+  s3Region: string;
+  s3BucketName: string;
+  s3Endpoint?: string;
+  s3ForcePathStyle: boolean;
+  s3AccessKeyId: string;
+  s3SecretAccessKey: string;
+  s3PublicBaseUrl: string;
+  s3UploadPrefix: string;
+  autoCreateS3Bucket: boolean;
+  s3EnablePublicReadAccess: boolean;
+  maxArchiveUploadSizeBytes: number;
   defaultTenantId: string;
   defaultEnvironment: string;
   autoCreateTable: boolean;
@@ -61,17 +72,73 @@ function readList(name: string): string[] {
     .filter((item) => item.length > 0);
 }
 
+function trimTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, "");
+}
+
+function buildDefaultS3PublicBaseUrl(params: {
+  bucketName: string;
+  endpoint?: string;
+  region: string;
+  forcePathStyle: boolean;
+}): string {
+  if (params.endpoint) {
+    const baseEndpoint = trimTrailingSlash(params.endpoint);
+    if (params.forcePathStyle) {
+      return `${baseEndpoint}/${params.bucketName}`;
+    }
+
+    return baseEndpoint;
+  }
+
+  return `https://${params.bucketName}.s3.${params.region}.amazonaws.com`;
+}
+
 export function loadConfig(): AppConfig {
-  const endpoint = readString("DYNAMODB_ENDPOINT", "");
+  const awsRegion = readString("AWS_REGION", "us-east-1");
+  const dynamoEndpoint = readString("DYNAMODB_ENDPOINT", "");
+
+  const s3Endpoint = readString("S3_ENDPOINT", "");
+  const s3BucketName = readString("S3_BUCKET_NAME", "module-artifacts");
+  const s3Region = readString("S3_REGION", awsRegion);
+  const s3ForcePathStyle = readBoolean("S3_FORCE_PATH_STYLE", Boolean(s3Endpoint));
+  const s3PublicBaseUrl = trimTrailingSlash(
+    readString(
+      "S3_PUBLIC_BASE_URL",
+      buildDefaultS3PublicBaseUrl({
+        bucketName: s3BucketName,
+        endpoint: s3Endpoint.length > 0 ? s3Endpoint : undefined,
+        region: s3Region,
+        forcePathStyle: s3ForcePathStyle,
+      }),
+    ),
+  );
+
+  const maxArchiveSizeMb = readNumber("MAX_ARCHIVE_UPLOAD_SIZE_MB", 20);
+  const maxArchiveUploadSizeBytes = Math.max(1, Math.floor(maxArchiveSizeMb)) * 1024 * 1024;
 
   return {
     host: readString("HOST", "0.0.0.0"),
     port: readNumber("PORT", 4000),
-    awsRegion: readString("AWS_REGION", "us-east-1"),
+    awsRegion,
     dynamoTableName: readString("DYNAMODB_TABLE_NAME", "module_registry"),
-    dynamoEndpoint: endpoint.length > 0 ? endpoint : undefined,
+    dynamoEndpoint: dynamoEndpoint.length > 0 ? dynamoEndpoint : undefined,
     dynamoAccessKeyId: readString("AWS_ACCESS_KEY_ID", "local"),
     dynamoSecretAccessKey: readString("AWS_SECRET_ACCESS_KEY", "local"),
+    s3Region,
+    s3BucketName,
+    s3Endpoint: s3Endpoint.length > 0 ? s3Endpoint : undefined,
+    s3ForcePathStyle,
+    s3AccessKeyId: readString("S3_ACCESS_KEY_ID", readString("AWS_ACCESS_KEY_ID", "local")),
+    s3SecretAccessKey: readString(
+      "S3_SECRET_ACCESS_KEY",
+      readString("AWS_SECRET_ACCESS_KEY", "local"),
+    ),
+    s3PublicBaseUrl,
+    s3UploadPrefix: readString("S3_UPLOAD_PREFIX", "modules"),
+    autoCreateS3Bucket: readBoolean("AUTO_CREATE_S3_BUCKET", true),
+    s3EnablePublicReadAccess: readBoolean("S3_ENABLE_PUBLIC_READ_ACCESS", true),
+    maxArchiveUploadSizeBytes,
     defaultTenantId: readString("DEFAULT_TENANT_ID", "public"),
     defaultEnvironment: readString("DEFAULT_ENVIRONMENT", "local"),
     autoCreateTable: readBoolean("AUTO_CREATE_TABLE", true),

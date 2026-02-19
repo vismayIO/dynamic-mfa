@@ -37,6 +37,7 @@ bun run dev:nowatch
 - `GET /health`
 - `GET /modules?tenantId=public&env=local&status=active`
 - `POST /modules`
+- `POST /modules/upload` (multipart form-data + `archive` `.zip`)
 - `PATCH /modules/:componentId/status?tenantId=public&env=local`
 
 If `MODULE_REGISTRY_API_KEY` is set, include `x-api-key` in requests.
@@ -59,6 +60,25 @@ curl -X POST http://localhost:4000/modules \
     "tenantId": "public",
     "env": "local"
   }'
+```
+
+## Upload Module Archive Example
+
+```bash
+curl -X POST http://localhost:4000/modules/upload \
+  -H "x-api-key: local-dev-key" \
+  -F "componentId=mfa-register-widget" \
+  -F "displayName=MFA Register Widget" \
+  -F "remoteScope=remoteWidget" \
+  -F "exposedModule=./Widget" \
+  -F "remoteEntryPath=remoteEntry.js" \
+  -F "defaultLayoutWidth=6" \
+  -F "defaultLayoutHeight=4" \
+  -F "status=active" \
+  -F "version=1.0.0" \
+  -F "tenantId=public" \
+  -F "env=local" \
+  -F "archive=@./dist/module.zip"
 ```
 
 ## Host Integration

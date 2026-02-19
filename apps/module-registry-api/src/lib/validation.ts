@@ -5,6 +5,22 @@ interface RegisterPayloadDefaults {
   environment: string;
 }
 
+export interface RegisterModuleUploadFields {
+  componentId: string;
+  displayName: string;
+  remoteScope: string;
+  exposedModule: `./${string}`;
+  defaultLayoutSize: {
+    width: number;
+    height: number;
+  };
+  status: ModuleStatus;
+  version: string;
+  tenantId: string;
+  env: string;
+  remoteEntryPath: string;
+}
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -49,6 +65,20 @@ function readLayoutSize(payload: Record<string, unknown>) {
     width,
     height,
   };
+}
+
+function readNumber(payload: Record<string, unknown>, keys: string[]): number | null {
+  const rawValue = readString(payload, keys);
+  if (!rawValue) {
+    return null;
+  }
+
+  const parsed = Number(rawValue);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+
+  return parsed;
 }
 
 export function parseRegisterModulePayload(
@@ -99,5 +129,69 @@ export function parseRegisterModulePayload(
     version,
     tenantId,
     env,
+  };
+}
+
+export function parseRegisterModuleUploadFields(
+  payload: unknown,
+  defaults: RegisterPayloadDefaults,
+): RegisterModuleUploadFields {
+  if (!isObject(payload)) {
+    throw new Error("Upload fields must be an object.");
+  }
+
+  const componentId = readString(payload, ["componentId", "id"]);
+  const displayName = readString(payload, ["displayName", "name"]);
+  const remoteScope = readString(payload, ["remoteScope", "scope"]);
+  const exposedModule = readString(payload, ["exposedModule", "module"]);
+  const tenantId = readString(payload, ["tenantId"]) ?? defaults.tenantId;
+  const env = readString(payload, ["env", "environment"]) ?? defaults.environment;
+  const version = readString(payload, ["version"]) ?? "1.0.0";
+  const status = readStatus(payload);
+  const remoteEntryPath =
+    readString(payload, ["remoteEntryPath", "remoteEntryFile", "remoteEntry"]) ??
+    "remoteEntry.js";
+
+  const width = readNumber(payload, ["defaultLayoutWidth", "layoutWidth", "width"]);
+  const height = readNumber(payload, ["defaultLayoutHeight", "layoutHeight", "height"]);
+
+  if (!componentId) {
+    throw new Error("componentId is required.");
+  }
+
+  if (!displayName) {
+    throw new Error("displayName is required.");
+  }
+
+  if (!remoteScope) {
+    throw new Error("remoteScope is required.");
+  }
+
+  if (!exposedModule || !exposedModule.startsWith("./")) {
+    throw new Error("exposedModule must start with './'.");
+  }
+
+  if (typeof width !== "number" || !Number.isFinite(width) || width <= 0) {
+    throw new Error("defaultLayoutWidth must be a number greater than 0.");
+  }
+
+  if (typeof height !== "number" || !Number.isFinite(height) || height <= 0) {
+    throw new Error("defaultLayoutHeight must be a number greater than 0.");
+  }
+
+  return {
+    componentId,
+    displayName,
+    remoteScope,
+    exposedModule: exposedModule as `./${string}`,
+    defaultLayoutSize: {
+      width,
+      height,
+    },
+    status,
+    version,
+    tenantId,
+    env,
+    remoteEntryPath,
   };
 }

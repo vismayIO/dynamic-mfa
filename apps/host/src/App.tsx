@@ -6,6 +6,7 @@ import {
 } from "@dnd-kit/core";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
+import { Link } from "react-router-dom";
 import type { RemoteComponentTheme } from "@workspace/ui-sdk";
 import type { CanvasState } from "./composer/canvas-state";
 import { loadCanvasState, saveCanvasState } from "./composer/layout-storage";
@@ -371,6 +372,9 @@ function App() {
             {registryLoading
               ? " Fetching modules from backend..."
               : ` Loaded ${registryModules.length} modules from backend.`}
+          </p>
+          <p>
+            <Link to="/register-component">Register custom module</Link>
           </p>
           {registryError ? <p className="read-the-docs">Registry error: {registryError}</p> : null}
           {!registryLoading && registryModules.length === 0 ? (

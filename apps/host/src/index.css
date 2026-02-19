@@ -210,3 +210,88 @@ body {
     border-bottom: 1px solid #d0d5dd;
   }
 }
+
+.composer-shell--single-column {
+  grid-template-columns: 1fr;
+  place-items: start center;
+  padding: 24px 16px;
+}
+
+.module-upload-page {
+  width: min(960px, 100%);
+  display: grid;
+  gap: 16px;
+}
+
+.module-upload-header h1 {
+  margin: 0 0 8px;
+}
+
+.module-upload-header p {
+  margin: 0;
+  color: #475467;
+}
+
+.module-upload-form {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.module-upload-field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #344054;
+}
+
+.module-upload-field input,
+.module-upload-field select {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+.module-upload-field small {
+  color: #667085;
+}
+
+.module-upload-field--full-width {
+  grid-column: 1 / -1;
+}
+
+.module-upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.module-upload-actions button {
+  border: 1px solid #1570ef;
+  background: #1570ef;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.module-upload-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.module-upload-error {
+  margin: 0;
+  color: #b42318;
+  font-weight: 500;
+}
+
+@media (max-width: 760px) {
+  .module-upload-form {
+    grid-template-columns: 1fr;
+  }
+}

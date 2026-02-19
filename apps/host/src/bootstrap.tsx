@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import App from "./App";
-import { NewPage } from "./pages/new-page";
+import { RegisterComponentPage } from "./pages/register-component";
 import "./index.css";
 
 const queryClient = new QueryClient({
@@ -22,7 +22,7 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/new-page" element={<NewPage />} />
+          <Route path="/register-component" element={<RegisterComponentPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
