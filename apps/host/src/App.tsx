@@ -392,9 +392,14 @@ function App() {
         <section className="composer-main">
           <header className="composer-main-header">
             <h2>Canvas</h2>
-            <p>
-              Items: <code>{canvasState.items.length}</code>
-            </p>
+            <div className="composer-main-actions">
+              <p>
+                Items: <code>{canvasState.items.length}</code>
+              </p>
+              <Link className="composer-nav-button" to="/register-component">
+                Register Component
+              </Link>
+            </div>
           </header>
 
           <ComposerCanvas
