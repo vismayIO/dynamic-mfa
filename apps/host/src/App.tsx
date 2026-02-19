@@ -4,6 +4,7 @@ import {
   useDroppable,
   type DragEndEvent,
 } from "@dnd-kit/core";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
 import type { RemoteComponentTheme } from "@workspace/ui-sdk";
 import type { CanvasState } from "./composer/canvas-state";
@@ -258,9 +259,20 @@ function App() {
     loadCanvasState(initialCanvasState),
   );
   const [remoteEvents, setRemoteEvents] = useState<HostRemoteEvent[]>([]);
-  const [registryModules, setRegistryModules] = useState<RemoteComponentRegistryItem[]>([]);
-  const [registryLoading, setRegistryLoading] = useState<boolean>(true);
-  const [registryError, setRegistryError] = useState<string | null>(null);
+  const {
+    data: registryModules = [],
+    isLoading: registryLoading,
+    error: registryQueryError,
+  } = useQuery({
+    queryKey: ["component-registry"],
+    queryFn: ({ signal }) => fetchComponentRegistry(signal),
+    staleTime: 30_000,
+  });
+  const registryError = registryQueryError
+    ? registryQueryError instanceof Error
+      ? registryQueryError.message
+      : "Failed to fetch module registry."
+    : null;
 
   const registryById = useMemo(
     () =>
@@ -340,41 +352,6 @@ function App() {
   useEffect(() => {
     saveCanvasState(canvasState);
   }, [canvasState]);
-
-  useEffect(() => {
-    let disposed = false;
-    const controller = new AbortController();
-
-    fetchComponentRegistry(controller.signal)
-      .then((registryItems) => {
-        if (disposed) {
-          return;
-        }
-
-        setRegistryModules(registryItems);
-        setRegistryError(null);
-      })
-      .catch((error: unknown) => {
-        if (disposed) {
-          return;
-        }
-
-        const message =
-          error instanceof Error ? error.message : "Failed to fetch module registry.";
-        setRegistryModules([]);
-        setRegistryError(message);
-      })
-      .finally(() => {
-        if (!disposed) {
-          setRegistryLoading(false);
-        }
-      });
-
-    return () => {
-      disposed = true;
-      controller.abort();
-    };
-  }, []);
 
   const handleRemoteEvent = useCallback((event: HostRemoteEvent) => {
     setRemoteEvents((currentEvents) => [event, ...currentEvents].slice(0, 20));
